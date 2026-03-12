@@ -23,7 +23,7 @@ func TestGetAPIKey(t *testing.T) {
 		},
 		"empty header value": {
 			headers: http.Header{"Authorization": []string{""}},
-			wantErr: nil,
+			wantErr: ErrNoAuthHeaderIncluded,
 		},
 		"wrong scheme Bearer": {
 			headers: http.Header{"Authorization": []string{"Bearer token"}},
