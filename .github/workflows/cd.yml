@@ -33,7 +33,9 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
 
       - name: Build and Push Docker Image to Artifact Registry
-        run: gcloud builds submit --tag us-central1-docker.pkg.dev/focal-acronym-490512-q1/notely-ar-repo/notely:${{ github.sha }} .
+        run: gcloud builds submit --tag us-central1-docker.pkg.dev/focal-acronym-490512-q1/notely-ar-repo/notely:v1.0 .
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Setup migration
         run: ./scripts/migrateup.sh
@@ -43,10 +45,8 @@ jobs:
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy notely \
-            --image us-central1-docker.pkg.dev/focal-acronym-490512-q1/notely-ar-repo/notely:${{ github.sha }} \
+            --image us-central1-docker.pkg.dev/focal-acronym-490512-q1/notely-ar-repo/notely:v1.0 \
             --region us-central1 \
             --allow-unauthenticated \
             --project focal-acronym-490512-q1 \
             --max-instances=4
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
