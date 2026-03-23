@@ -18,7 +18,7 @@ jobs:
         with:
           go-version: "1.26.0"
 
-      - name: setup goose
+      - name: Install goose migrations tool
         run: go install github.com/pressly/goose/v3/cmd/goose@latest
 
       - name: Build App
@@ -36,8 +36,11 @@ jobs:
         run: gcloud builds submit --tag us-central1-docker.pkg.dev/focal-acronym-490512-q1/notely-ar-repo/notely:v1.0 .
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
       - name: Setup migration
         run: ./scripts/migrateup.sh
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Deploy to Cloud Run
         run: |
